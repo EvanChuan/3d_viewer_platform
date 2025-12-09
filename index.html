@@ -1,13 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3d-platform</title>
+    <title>SplatHome - 沉浸式租屋平台</title>
+    <!-- 這一行就是引入 style.css 的位置 -->
+    <link rel="stylesheet" href="/src/style.css"> 
+    <!-- 引入 Google Fonts 增加質感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
+    <!-- 3D Viewer 容器 -->
     <div id="app"></div>
+
+    <!-- UI 覆蓋層 (Overlay) -->
+    <div id="ui-container">
+      
+      <!-- 頂部導航 -->
+      <nav class="navbar">
+        <div class="logo">SplatHome</div>
+        <div class="status-badge">🟢 線上帶看中</div>
+      </nav>
+
+      <!-- 左側：房源資訊卡 -->
+      <div class="property-card">
+        <div class="card-header">
+          <h1>台北信義區・陽光景觀套房</h1>
+          <p class="address">📍 台北市信義區信義路五段</p>
+        </div>
+        <div class="card-body">
+          <div class="price-tag">$25,000 <span class="unit">/ 月</span></div>
+          <div class="specs">
+            <span>12 坪</span> • <span>1 房 1 廳</span> • <span>3F/5F</span>
+          </div>
+          <div class="description">
+            <p>這是一個使用 iPhone 拍攝並透過 3DGS 重建的真實房源。配備全新家具，採光極佳。</p>
+          </div>
+          <div class="agent-info">
+            <div class="avatar">👨‍💼</div>
+            <div>
+              <p class="name">Evan Chuan</p>
+              <p class="role">房東直租</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-primary">立即預約</button>
+          <button class="btn-secondary">收藏</button>
+        </div>
+      </div>
+
+      <!-- 右側：功能工具列 -->
+      <div class="toolbar">
+        <button id="btn-view" class="tool-btn active" title="瀏覽模式">
+          👁️ <span>漫遊</span>
+        </button>
+        <button id="btn-measure" class="tool-btn" title="量測模式">
+          📏 <span>量尺</span>
+        </button>
+        <button id="btn-daynight" class="tool-btn" title="切換日夜">
+          ☀️ <span>切換時段</span>
+        </button>
+      </div>
+
+      <!-- 量測結果顯示 (預設隱藏) -->
+      <div id="measure-output" class="measure-toast hidden">
+        請點擊畫面中的兩點進行測量
+      </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

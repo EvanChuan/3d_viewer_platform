@@ -1,139 +1,223 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --primary: #2563eb;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-/* body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-} */
-
-body {
+body, html {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* 隱藏捲軸 */
-  background-color: #333; /* 背景色 */
-}
-
-/* 強制讓 Canvas 填滿螢幕 */
-canvas {
-  display: block;
-  width: 100vw;
-  height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  background-color: #000; /* 強制背景黑，確認 canvas 是否存在 */
+}
+
+/* UI Container */
+#ui-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 讓 UI 元素恢復可點擊 */
+.navbar, .property-card, .toolbar, .btn-primary, .btn-secondary {
+  pointer-events: auto;
+}
+
+/* Navbar */
+.navbar {
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+  color: white;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -1px;
 }
 
-.card {
-  padding: 2em;
+.status-badge {
+  background: rgba(0,0,0,0.6);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  backdrop-filter: blur(4px);
 }
 
-.read-the-docs {
-  color: #888;
+/* Property Card */
+.property-card {
+  position: absolute;
+  left: 20px;
+  top: 100px;
+  width: 320px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,0.5);
+  animation: slideIn 0.5s ease-out;
 }
 
-button {
+@keyframes slideIn {
+  from { transform: translateX(-50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.card-header h1 {
+  font-size: 1.25rem;
+  margin: 0 0 5px 0;
+  color: #1f2937;
+}
+
+.address {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.card-body { margin: 20px 0; }
+
+.price-tag {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.unit {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.specs {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-top: 5px;
+  display: flex;
+  gap: 8px;
+}
+
+.description {
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+.agent-info {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name { font-weight: 600; font-size: 0.9rem; margin: 0; }
+.role { font-size: 0.75rem; color: #6b7280; margin: 0; }
+
+.card-footer { display: flex; gap: 10px; }
+
+.btn-primary {
+  flex: 2;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-.hotspot-label {
+.btn-secondary {
+  flex: 1;
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Toolbar */
+.toolbar {
   position: absolute;
-  top: 0;  /* 必備！歸零起始點 */
-  left: 0; /* 必備！歸零起始點 */
-  padding: 4px 8px;
-  background: rgba(0, 123, 255, 0.9);
-  color: #fff;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tool-btn {
+  width: 60px;
+  height: 60px;
   border-radius: 12px;
-  font-size: 12px;
-  font-family: sans-serif;
-  pointer-events: none; /* 不阻擋滑鼠，點擊仍作用在 3D 球上 */
-  white-space: nowrap;
-  z-index: 999; /* 確保浮在最上層 */
+  border: none;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #4b5563;
 }
 
-.hotspot-info {
+.tool-btn span { font-size: 0.7rem; margin-top: 2px; }
+.tool-btn:hover { transform: scale(1.05); }
+.tool-btn.active { background: var(--primary); color: white; }
+
+/* Measure Toast */
+.measure-toast {
   position: absolute;
-  max-width: 200px;
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: sans-serif;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-  pointer-events: auto; /* 可以點擊裡面的按鈕（如果未來加） */
-  z-index: 10;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(4px);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+.hidden { display: none; }
