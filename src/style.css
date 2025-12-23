@@ -1,26 +1,194 @@
-:root {
-  --primary: #2563eb;
-  --bg-glass: rgba(255, 255, 255, 0.85);
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+/* ==========================================
+   全域設定與佈局
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body, html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  font-family: 'Inter', sans-serif;
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
 }
 
 #app {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  background-color: #000; /* 強制背景黑，確認 canvas 是否存在 */
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================
+   3D 瀏覽器與照片列
+   ========================================== */
+#view-container {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+}
+
+#gallery-container {
+    width: 100%;
+    height: 15vh;
+    background: #111;
+    display: flex;
+    overflow-x: auto;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+    gap: 10px;
+    border-top: 1px solid #333;
+}
+
+/* ==========================================
+   左側：房源資訊卡 (新版美化)
+   ========================================== */
+.property-card {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    width: 300px;
+    background: rgba(255, 255, 255, 0.623);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.property-card .title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.property-card .address {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.price-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.price-line .price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #da515d;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.price-line .size, 
+.price-line .layout, 
+.price-line .floor {
+    font-size: 13px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #555;
+}
+
+.property-card .desc {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.agent-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.agent-info .avatar {
+    font-size: 24px;
+    background: #f0f0f0;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.agent-info .name { font-size: 16px; font-weight: 600; margin: 0; }
+.agent-info .role { font-size: 13px; color: #888; margin: 0; }
+
+/* ==========================================
+   右側與量測組件
+   ========================================== */
+#measure-output {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 150;
+}
+
+#info-overlay {
+    position: absolute;
+    top: 50%;
+    right: 80px; /* 避開右側按鈕 */
+    transform: translateY(-50%);
+    width: 300px;
+    background: rgba(45, 45, 45, 0.8);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    border-right: 5px solid #bfdfbf;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+#info-content {
+    font-size: 17px;
+    line-height: 1.8;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+#camera-debug {
+    position: absolute;
+    bottom: 17vh;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff00;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 100;
+    border: 1px solid #333;
+}
+
+/* ==========================================
+   功能性類別
+   ========================================== */
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 /* UI Container */
@@ -64,113 +232,6 @@ body, html {
   border-radius: 20px;
   font-size: 0.8rem;
   backdrop-filter: blur(4px);
-}
-
-/* Property Card */
-.property-card {
-  position: absolute;
-  left: 20px;
-  top: 100px;
-  width: 320px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(255,255,255,0.5);
-  animation: slideIn 0.5s ease-out;
-}
-
-@keyframes slideIn {
-  from { transform: translateX(-50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-.card-header h1 {
-  font-size: 1.25rem;
-  margin: 0 0 5px 0;
-  color: #1f2937;
-}
-
-.address {
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin: 0;
-}
-
-.card-body { margin: 20px 0; }
-
-.price-tag {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111827;
-}
-
-.unit {
-  font-size: 0.9rem;
-  color: #6b7280;
-  font-weight: 400;
-}
-
-.specs {
-  font-size: 0.9rem;
-  color: #4b5563;
-  margin-top: 5px;
-  display: flex;
-  gap: 8px;
-}
-
-.description {
-  font-size: 0.85rem;
-  color: #4b5563;
-  margin-top: 15px;
-  line-height: 1.5;
-}
-
-.agent-info {
-  display: flex;
-  align-items: center;
-  margin-top: 15px;
-  gap: 10px;
-  padding-top: 15px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  background: #e5e7eb;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.name { font-weight: 600; font-size: 0.9rem; margin: 0; }
-.role { font-size: 0.75rem; color: #6b7280; margin: 0; }
-
-.card-footer { display: flex; gap: 10px; }
-
-.btn-primary {
-  flex: 2;
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-secondary {
-  flex: 1;
-  background: white;
-  border: 1px solid #d1d5db;
-  color: #374151;
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
 }
 
 /* Toolbar */

@@ -1,0 +1,317 @@
+:root {
+  --primary: #2563eb;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  background-color: #000; /* 強制背景黑，確認 canvas 是否存在 */
+}
+
+/* UI Container */
+#ui-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 讓 UI 元素恢復可點擊 */
+.navbar, .property-card, .toolbar, .btn-primary, .btn-secondary {
+  pointer-events: auto;
+}
+
+/* Navbar */
+.navbar {
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+  color: white;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -1px;
+}
+
+.status-badge {
+  background: rgba(0,0,0,0.6);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  backdrop-filter: blur(4px);
+}
+
+/* Property Card */
+.property-card {
+  position: absolute;
+  left: 20px;
+  top: 100px;
+  width: 320px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.438);
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.card-header h1 {
+  font-size: 1.25rem;
+  margin: 0 0 5px 0;
+  color: #1f2937;
+}
+
+.address {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.card-body { margin: 20px 0; }
+
+.price-tag {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.unit {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.specs {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-top: 5px;
+  display: flex;
+  gap: 8px;
+}
+
+.description {
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+.agent-info {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name { font-weight: 600; font-size: 0.9rem; margin: 0; }
+.role { font-size: 0.75rem; color: #6b7280; margin: 0; }
+
+.card-footer { display: flex; gap: 10px; }
+
+.btn-primary {
+  flex: 2;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  flex: 1;
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+
+
+/* 相機開發工具 */
+#camera-debug {
+    position: absolute;
+    bottom: 17vh;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff00;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 12px;
+    pointer-events: none;
+    line-height: 1.5;
+    border: 1px solid #333;
+    z-index: 100;
+}
+
+#camera-debug span {
+    color: #fff;
+    background: #444;
+    padding: 0 4px;
+}
+
+/* 資訊導覽框 */
+#info-overlay {
+    position: absolute;
+    top: 50%;
+    right: 80px;
+    transform: translateY(-50%);
+    width: 300px;
+    background: rgba(45, 45, 45, 0.8);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    border-right: 5px solid #bfdfbfff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+#info-content {
+    font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.8;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* 隱藏狀態控制 */
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Toolbar */
+.toolbar {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tool-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  border: none;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #4b5563;
+}
+
+.tool-btn span { font-size: 0.7rem; margin-top: 2px; }
+.tool-btn:hover { transform: scale(1.05); }
+.tool-btn.active { background: var(--primary); color: white; }
+
+/* Measure Toast */
+.measure-toast {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(4px);
+}
+
+.hidden { display: none; }
+
+/* 容器樣式 */
+#view-container {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+}
+
+#gallery-container {
+    width: 100%;
+    height: 15vh;
+    background: #111;
+    display: flex;
+    overflow-x: auto;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+    gap: 10px;
+    border-top: 1px solid #333;
+}
+
+/* 量測輸出 */
+#measure-output {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 150;
+}
