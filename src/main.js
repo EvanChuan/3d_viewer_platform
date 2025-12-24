@@ -137,7 +137,7 @@ const ROOM_CONFIGS = {
     alphaThreshold: 5, // 過濾雜訊閾值
   },
   room2: {
-    path: 'assets/room2.splat',
+    path: 'assets/room2.ksplat',
     imagepath: 'data/room2/images/',
     images: [      
       {
