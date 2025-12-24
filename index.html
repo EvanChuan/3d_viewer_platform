@@ -50,21 +50,34 @@
 
       <!-- 右側：功能工具列 -->
       <div class="toolbar">
+        <div class="toolbar-header">功能選單</div>
         <button id="btn-view" class="tool-btn active" title="瀏覽模式">
           👁️ <span>3D瀏覽</span>
         </button>
         <button id="btn-measure" class="tool-btn" title="量測模式">
           📏 <span>量尺</span>
         </button>
-        <!-- <button id="btn-daynight" class="tool-btn" title="切換日夜">
-          ☀️ <span>切換時段</span>
-        </button> -->
+        <button id="btn-home" class="tool-btn" title="回初始位置">
+          🏠 <span>回初始位置</span>
+        </button>
       </div>
 
       <!-- 量測結果顯示 (預設隱藏) -->
       <div id="measure-output" class="measure-toast hidden">
         請點擊畫面中的兩點進行測量
       </div>
+    </div>
+
+    <!-- 照片放大彈窗 -->
+    <div class="gallery-container">
+      <div id="gallery" class="gallery"></div>
+    </div>
+    <div id="photo-overlay" class="photo-overlay hidden">
+        <div class="overlay-content">
+            <span id="close-overlay" class="close-btn">&times;</span>
+            <img id="enlarged-photo" src="" alt="放大照片">
+            <div id="photo-info" class="photo-caption"></div>
+        </div>
     </div>
 
     <script type="module" src="/src/main.js"></script>

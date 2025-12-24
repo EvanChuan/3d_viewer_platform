@@ -128,7 +128,7 @@ body {
 .agent-info .role { font-size: 13px; color: #888; margin: 0; }
 
 /* ==========================================
-   右側與量測組件
+   量測組件
    ========================================== */
 #measure-output {
     position: absolute;
@@ -141,30 +141,6 @@ body {
     border-radius: 4px;
     pointer-events: none;
     z-index: 150;
-}
-
-#info-overlay {
-    position: absolute;
-    top: 50%;
-    right: 80px; /* 避開右側按鈕 */
-    transform: translateY(-50%);
-    width: 300px;
-    background: rgba(45, 45, 45, 0.8);
-    backdrop-filter: blur(10px);
-    color: white;
-    padding: 25px;
-    border-radius: 15px;
-    border-right: 5px solid #bfdfbf;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    z-index: 200;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    pointer-events: none;
-}
-
-#info-content {
-    font-size: 17px;
-    line-height: 1.8;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 #camera-debug {
@@ -234,38 +210,65 @@ body {
   backdrop-filter: blur(4px);
 }
 
-/* Toolbar */
+/* 工具列容器 */
 .toolbar {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.75); /* 深色半透明背景 */
+    backdrop-filter: blur(10px);    /* 毛玻璃效果 */
+    padding: 15px 10px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
 }
 
+/* 標題樣式 */
+.toolbar-header {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+/* 按鈕樣式最佳化 */
 .tool-btn {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  border: none;
-  background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  color: #4b5563;
+    background: transparent;
+    border: none;
+    color: #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 8px;
 }
 
-.tool-btn span { font-size: 0.7rem; margin-top: 2px; }
-.tool-btn:hover { transform: scale(1.05); }
-.tool-btn.active { background: var(--primary); color: white; }
+.tool-btn span {
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+/* 懸停與啟動狀態 */
+.tool-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.tool-btn.active {
+    background: #007bff; /* 藍色高亮 */
+    color: #fff;
+}
 
 /* Measure Toast */
 .measure-toast {
@@ -282,3 +285,60 @@ body {
 }
 
 .hidden { display: none; }
+
+.photo-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 2000;
+    transition: opacity 0.3s;
+}
+.photo-overlay.hidden { display: none; opacity: 0; }
+
+/* 修改後的彈窗內容容器 */
+.overlay-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 85vh; /* 縮小一點高度，留給手機版或寬螢幕空間 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#enlarged-photo {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain; /* 確保圖片不變形 */
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* 將文字移動到照片內部的底部 */
+.photo-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)); /* 底部漸層黑 */
+    color: white;
+    padding: 20px 15px 15px;
+    text-align: center;
+    font-size: 16px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    pointer-events: none; /* 防止文字遮擋點擊 */
+}
+
+.close-btn {
+    position: fixed; /* 改為固定定位 */
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2100;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}

@@ -1,27 +1,37 @@
 import * as THREE from 'three';
 import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
 
+// Gobal setting
+// 相機初始設定
+const CAMERA_INIT = {
+    up: [0, 1, 0],
+    position: [-2.44040, 0.31066, 0.19306],
+    lookAt: [1.33026, -0.28629, -1.54476]
+}
+
 // 房間資訊
 const ROOM_META = {
   room1: {
-    title: '台北信義區・陽光景觀套房',
-    address: '台北市信義區信義路五段',
-    price: '$21,000 / 月',
-    size: '12 坪',
-    layout: '1 房 1 廳',
-    floor: '3F/5F',
-    desc: '這是一個使用 iPhone 拍攝並透過 3DGS 重建的真實房源。配備全新家具，採光極佳。',
+    title: '仁德區・陽光景觀雙人套房',
+    address: '台南市仁德區',
+    price: '$11,000 / 月',
+    size: '10坪',
+    layout: '1房 1衛',
+    floor: '3F/4F',
+    desc: '雙人套房、落地窗陽台、乾溼分離衛浴、全新家具與電器設備。',
     agent_name: 'Evan',
     agent_role: '房東直租',
   },
   room2: {
-    title: '中山區・溫馨雙人套房',
-    address: '台北市中山區民生東路二段',
-    price: '$32,000 / 月',
-    size: '15 坪',
-    layout: '2 房 1 廳',
-    floor: '8F/12F',
-    desc: '鄰近捷運與公園，採光通風良好，適合小家庭入住。',
+    title: '仁德區・陽光景觀單人套房',
+    address: '台南市仁德區',
+    price: '$8,500 / 月',
+    size: '7 坪',
+    layout: '1房 1衛',
+    floor: '3F/4F',
+    desc: '單人套房、落地窗陽台、乾溼分離衛浴、全新家具與電器設備。',
+    agent_name: 'Evan',
+    agent_role: '房東直租',
   },
   room3: {
     title: '大安區・靜巷質感宅',
@@ -40,16 +50,17 @@ app.innerHTML = `
   <div id="view-container"></div>
   <div id="gallery-container"></div>
   <div id="measure-output" class="hidden">請點擊第一點</div>
-  <div id="camera-debug">
-    <div>--- 相機開發工具 ---</div>
-    <div id="cam-pos">Position: [0, 0, 0]</div>
-    <div id="cam-look">LookAt: [0, 0, 0]</div>
-    <div style="color: #aaa; margin-top: 5px;">按下 <span>C</span> 複製到 Console</div>
-  </div>
   <div id="info-overlay" class="hidden">
     <div id="info-content">這裡顯示照片描述...</div>
   </div>
-`;
+`
+  // <div id="camera-debug">
+  //   <div>--- 相機開發工具 ---</div>
+  //   <div id="cam-pos">Position: [0, 0, 0]</div>
+  //   <div id="cam-look">LookAt: [0, 0, 0]</div>
+  //   <div style="color: #aaa; margin-top: 5px;">按下 <span>C</span> 複製到 Console</div>
+  // </div>
+;
 
 // 後續的 DOM 節點選取邏輯保持不變
 const viewContainer = document.querySelector('#view-container');
@@ -57,41 +68,6 @@ const galleryContainer = document.querySelector('#gallery-container');
 const measureToast = document.getElementById('measure-output');
 const infoOverlay = document.getElementById('info-overlay');
 const infoContent = document.getElementById('info-content');
-
-// 2. 建立更新與監聽邏輯
-function setupCameraDebug() {
-    const posEl = document.getElementById('cam-pos');
-    const lookEl = document.getElementById('cam-look');
-
-    // 每幀更新顯示資訊
-    setInterval(() => {
-        if (viewer.camera) {
-            const pos = viewer.camera.position;
-            // 透過 OrbitControls 的 target 獲取 LookAt 點，若無則取相機前方向量
-            const lookAt = viewer.controls ? viewer.controls.target : new THREE.Vector3(0, 0, -1).applyQuaternion(viewer.camera.quaternion).add(pos);
-
-            posEl.innerText = `Position: [${pos.x.toFixed(4)}, ${pos.y.toFixed(4)}, ${pos.z.toFixed(4)}]`;
-            lookEl.innerText = `LookAt: [${lookAt.x.toFixed(4)}, ${lookAt.y.toFixed(4)}, ${lookAt.z.toFixed(4)}]`;
-        }
-    }, 100);
-
-    // 鍵盤按下 'C' 時印出可直接使用的程式碼
-    window.addEventListener('keydown', (e) => {
-        if (e.key.toLowerCase() === 'c') {
-            const pos = viewer.camera.position;
-            const lookAt = viewer.controls ? viewer.controls.target : new THREE.Vector3(0, 0, -1).applyQuaternion(viewer.camera.quaternion).add(pos);
-            
-            const configString = `
-// 複製以下內容到 CAMERA_INIT
-position: [${pos.x.toFixed(5)}, ${pos.y.toFixed(5)}, ${pos.z.toFixed(5)}],
-lookAt: [${lookAt.x.toFixed(5)}, ${lookAt.y.toFixed(5)}, ${lookAt.z.toFixed(5)}],
-            `;
-            console.log("%c相機位置已擷取：", "color: #00ff00; font-weight: bold; font-size: 14px;");
-            console.log(configString);
-            alert("相機座標已印出在 Console (F12)");
-        }
-    });
-}
 
 // Helper: 將歐拉角 (度數) 轉為四元數陣列
 function getRotationQuat(xDeg, yDeg, zDeg) {
@@ -114,7 +90,7 @@ const meta = ROOM_META[roomId] || ROOM_META.room1;
 const ROOM_CONFIGS = {
   room1: {
     path: 'assets/room1.ksplat',
-    imagepath: 'data/room1/images/', // 確保路徑指向圖片資料夾
+    imagepath: 'data/room1/images/',
     images: [
       {
         file: '0015.jpg',
@@ -147,6 +123,11 @@ const ROOM_CONFIGS = {
         info: '<b>標準雙人床</b><br>獨立筒全新雙人床。提供保潔墊，床單可自行套上。'
       }
     ],
+    cameraInit: {
+      up: [0, 1, 0],
+      position: [-2.44040, 0.31066, 0.19306],
+      lookAt: [1.33026, -0.28629, -1.54476]
+    },
     scale: [1.0, 1.0, 1.0],
     position: [0, 0, 0],
     rotation: getRotationQuat(180, 60, 0),
@@ -154,8 +135,56 @@ const ROOM_CONFIGS = {
   },
   room2: {
     path: 'assets/room2.splat',
-    imagepath: 'data/room1/images/', // 確保路徑指向圖片資料夾
-    images: ['img_01.jpg', 'img_02.jpg', 'img_03.jpg', 'img_04.jpg', 'img_05.jpg'], // 手動列出想展示的照片
+    imagepath: 'data/room2/images/',
+    images: [      
+      {
+        file: '0010.jpg',
+        position: [2.47568, 0.58055, 6.71965],
+        lookAt: [1.64006, -0.29540, -0.08876],
+        info: '<b>落地窗與陽台</b><br>大片落地窗設計，下午時段採光極佳，通風良好。陽台空間可再做利用。'
+      },
+      {
+        file: '0091.jpg',
+        position: [0.59860, 0.36402, 6.34861],
+        lookAt: [2.19979, 0.04867, 4.26838],
+        info: '<b>書桌,衣櫃</b><br>全新書桌以及衣櫃，多功能多隔間。'
+      },
+      {
+        file: '0137.jpg',
+        position: [-0.17408, 0.51737, -1.11695],
+        lookAt: [0.19351, 0.26373, -0.62842],
+        info: '<b>單人床</b><br>獨立筒單人床。提供保潔墊，床單可自行套上。'
+      },
+      {
+        file: '0165.jpg',
+        position: [4.15656, -0.63881, 4.70131],
+        lookAt: [2.72083, -1.00054, 3.93672],
+        info: '<b>冰箱</b><br>雙門省電電冰箱。'
+      },
+      {
+        file: '0193.jpg',
+        position: [-2.86285, -0.64242, -2.10635],
+        lookAt: [0.86523, -0.94457, -1.51923],
+        info: '<b>書桌,衣櫃</b><br>全新書桌以及衣櫃，多功能多隔間。'
+      },
+      {
+        file: '0312.jpg',
+        position: [-0.91573, 0.32600, -0.90864],
+        lookAt: [-2.61255, -0.28620, -1.87381],
+        info: '<b>衛浴</b><br>乾溼分離衛浴，洗完澡後地板不溼滑。'
+      },
+      {
+        file: '0376.jpg',
+        position: [-2.13576, -0.37465, -3.43187],
+        lookAt: [-2.88232, -0.51778, -3.14454],
+        info: '<b>衛浴</b><br>乾溼分離衛浴，洗完澡後地板不溼滑。'
+      }
+    ],
+    cameraInit: {
+      up: [0, 1, 0],
+      position: [3.12415, 0.21492, 3.99105],
+      lookAt: [0.18981, -0.79636, -0.23536]
+    },
     scale: [1.0, 1.0, 1.0],
     position: [0, 0, 0],
     rotation: getRotationQuat(180, 0, 0),
@@ -163,7 +192,7 @@ const ROOM_CONFIGS = {
   },
   room3: {
     path: 'assets/room3.splat',
-    imagepath: 'data/room1/images/', // 確保路徑指向圖片資料夾
+    imagepath: 'data/room3/images/', // 確保路徑指向圖片資料夾
     images: ['img_01.jpg', 'img_02.jpg', 'img_03.jpg', 'img_04.jpg', 'img_05.jpg'], // 手動列出想展示的照片
     scale: [1.0, 1.0, 1.0],
     position: [0, 0, 0],
@@ -173,26 +202,19 @@ const ROOM_CONFIGS = {
 };
 const MODEL_CONFIG = ROOM_CONFIGS[roomId];
 
-
-// 相機初始設定
-const CAMERA_INIT = {
-    up: [0, 1, 0],
-    position: [-2.44040, 0.31066, 0.19306],
-    lookAt: [1.33026, -0.28629, -1.54476]
-}
-
 // 初始化 Viewer
+const currentCamera = MODEL_CONFIG.cameraInit || CAMERA_INIT;
 const viewer = new GaussianSplats3D.Viewer({
     'rootElement': viewContainer,
-    'cameraUp': CAMERA_INIT.up,
-    'initialCameraPosition': CAMERA_INIT.position,
-    'initialCameraLookAt': CAMERA_INIT.lookAt,
+    'cameraUp': currentCamera.up,
+    'initialCameraPosition': currentCamera.position,
+    'initialCameraLookAt': currentCamera.lookAt,
     'selfDrivenMode': true,
     'antialiased': true,
     'splatSortDistanceMapPrecision': 16,
 });
 
-// 載入 Splat 檔案
+// 載入模型檔案
 viewer.addSplatScenes([{
     'path': MODEL_CONFIG.path,
     'showLoadingUI': true,
@@ -212,7 +234,7 @@ viewer.addSplatScenes([{
 
 
 // ==========================================
-// 狀態管理與 UI
+// 功能列狀態管理與 UI
 let appState = {
     mode: 'view',
     measurePoints: [],
@@ -220,9 +242,9 @@ let appState = {
 };
 
 // 為了讓外部按鈕也能運作 (如果你有另外的 HTML 按鈕)
-// 這裡假設按鈕可能不存在於 app.innerHTML 裡，做個防呆
 const btnView = document.getElementById('btn-view');
 const btnMeasure = document.getElementById('btn-measure');
+const btnHome = document.getElementById('btn-home'); 
 
 function setMode(mode) {
     appState.mode = mode;
@@ -241,10 +263,21 @@ function setMode(mode) {
 
 if (btnView) btnView.addEventListener('click', () => setMode('view'));
 if (btnMeasure) btnMeasure.addEventListener('click', () => setMode('measure'));
+if (btnHome) {
+    btnHome.addEventListener('click', () => {
+        // 1. 先切換回瀏覽模式，避免留在量測模式
+        setMode('view');
+        
+        // 2. 執行相機重置
+        const currentCamera = ROOM_CONFIGS[roomId].cameraInit || CAMERA_INIT;
+        viewer.camera.position.set(...currentCamera.position);
+        viewer.controls.target.set(...currentCamera.lookAt);
+        viewer.controls.update();
+        
+        console.log("已回到初始位置並切換至瀏覽模式");
+    });
+}
 
-const axesHelper = new THREE.AxesHelper(5);
-axesHelper.position.set(0, 0, 0);
-viewer.threeScene.add(axesHelper);
 
 
 // ==========================================
@@ -257,9 +290,18 @@ function loadGallery() {
 
     galleryContainer.innerHTML = ''; // 清空舊內容
 
+    // 獲取彈窗元件
+    const overlay = document.getElementById('photo-overlay');
+    const enlargedImg = document.getElementById('enlarged-photo');
+    const photoCaption = document.getElementById('photo-info');
+
     MODEL_CONFIG.images.forEach((imgData) => {
         const img = document.createElement('img');
-        img.src = `${MODEL_CONFIG.imagepath}${imgData.file}`;
+        
+        // 兼容物件與純字串格式
+        const fileName = (typeof imgData === 'string') ? imgData : imgData.file;
+        img.src = `${MODEL_CONFIG.imagepath}${fileName}`;
+        
         img.style.cssText = `
             height: 90%;
             cursor: pointer;
@@ -269,23 +311,31 @@ function loadGallery() {
             transition: all 0.2s;
         `;
 
-        img.onmouseover = () => { img.style.borderColor = '#00ff00'; };
-        img.onmouseout = () => { img.style.borderColor = (img.dataset.active === 'true') ? '#00ff00' : '#333'; };
-        
         img.onclick = () => {
             // 1. UI 高亮處理
-            Array.from(galleryContainer.children).forEach(i => {
-                i.style.borderColor = '#333';
-                i.dataset.active = 'false';
-            });
+            Array.from(galleryContainer.children).forEach(i => i.style.borderColor = '#333');
             img.style.borderColor = '#00ff00';
-            img.dataset.active = 'true';
 
-            // 2. 執行相機同步
-            syncCameraToView(imgData.position, imgData.lookAt);
+            // 2. 執行相機同步 (僅當 imgData 是物件且有座標時)
+            if (typeof imgData === 'object' && imgData.position) {
+                syncCameraToView(imgData.position, imgData.lookAt);
+                photoCaption.innerHTML = imgData.info || "";
+            } else {
+                photoCaption.innerHTML = "";
+            }
 
-            // 3. 顯示資訊解說框
-            showInfoOverlay(imgData.info);
+            // 3. 顯示放大彈窗 (關鍵點！)
+            if (overlay && enlargedImg) {
+                enlargedImg.src = img.src; // 使用目前圖片的路徑
+                overlay.classList.remove('hidden');
+                overlay.style.display = 'flex'; // 確保顯示
+            }
+            if (imgData.info && imgData.info.trim() !== "") {
+                photoCaption.innerHTML = imgData.info;
+                photoCaption.style.display = 'block';
+            } else {
+                photoCaption.style.display = 'none';
+            }
         };
 
         galleryContainer.appendChild(img);
@@ -309,21 +359,17 @@ function syncCameraToView(pos, lookAt) {
     console.log(`已同步至照片視角: ${pos}`);
 }
 
-function showInfoOverlay(text) {
-    infoContent.innerHTML = text;
-    infoOverlay.classList.remove('hidden');
-    infoOverlay.style.opacity = '1';
-
-    // (選配) 5秒後自動隱藏，或當使用者移動相機時隱藏
-    // setTimeout(() => { infoOverlay.style.opacity = '0'; }, 5000);
+// 點擊彈窗背景或關閉按鈕時隱藏
+const overlay = document.getElementById('photo-overlay');
+if (overlay) {
+    overlay.addEventListener('click', (e) => {
+        // 如果點擊的是背景（不是照片本身），則關閉
+        if (e.target === overlay || e.target.classList.contains('close-btn')) {
+            overlay.classList.add('hidden');
+            overlay.style.display = 'none';
+        }
+    });
 }
-
-// (進階) 當使用者手動旋轉或移動相機時，自動隱藏資訊框
-window.addEventListener('pointerdown', () => {
-    infoOverlay.style.opacity = '0';
-    setTimeout(() => { if(infoOverlay.style.opacity === '0') infoOverlay.classList.add('hidden'); }, 300);
-});
-
 
 // ==========================================
 // 量測工具 (維持原樣，但修正變數引用)
@@ -418,3 +464,43 @@ function applyRoomMeta(meta) {
 // 啟動執行
 applyRoomMeta(meta);
 loadGallery();
+
+// // 2. 建立更新與監聽邏輯
+// function setupCameraDebug() {
+//     const posEl = document.getElementById('cam-pos');
+//     const lookEl = document.getElementById('cam-look');
+
+//     // 每幀更新顯示資訊
+//     setInterval(() => {
+//         if (viewer.camera) {
+//             const pos = viewer.camera.position;
+//             // 透過 OrbitControls 的 target 獲取 LookAt 點，若無則取相機前方向量
+//             const lookAt = viewer.controls ? viewer.controls.target : new THREE.Vector3(0, 0, -1).applyQuaternion(viewer.camera.quaternion).add(pos);
+
+//             posEl.innerText = `Position: [${pos.x.toFixed(4)}, ${pos.y.toFixed(4)}, ${pos.z.toFixed(4)}]`;
+//             lookEl.innerText = `LookAt: [${lookAt.x.toFixed(4)}, ${lookAt.y.toFixed(4)}, ${lookAt.z.toFixed(4)}]`;
+//         }
+//     }, 100);
+
+//     // 鍵盤按下 'C' 時印出可直接使用的程式碼
+//     window.addEventListener('keydown', (e) => {
+//         if (e.key.toLowerCase() === 'c') {
+//             const pos = viewer.camera.position;
+//             const lookAt = viewer.controls ? viewer.controls.target : new THREE.Vector3(0, 0, -1).applyQuaternion(viewer.camera.quaternion).add(pos);
+            
+//             const configString = `
+// // 複製以下內容到 CAMERA_INIT
+// position: [${pos.x.toFixed(5)}, ${pos.y.toFixed(5)}, ${pos.z.toFixed(5)}],
+// lookAt: [${lookAt.x.toFixed(5)}, ${lookAt.y.toFixed(5)}, ${lookAt.z.toFixed(5)}],
+//             `;
+//             console.log("%c相機位置已擷取：", "color: #00ff00; font-weight: bold; font-size: 14px;");
+//             console.log(configString);
+//             alert("相機座標已印出在 Console (F12)");
+//         }
+//     });
+// }
+
+
+// const axesHelper = new THREE.AxesHelper(5);
+// axesHelper.position.set(0, 0, 0);
+// viewer.threeScene.add(axesHelper);
