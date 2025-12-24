@@ -207,7 +207,6 @@ const MODEL_CONFIG = ROOM_CONFIGS[roomId] || ROOM_CONFIGS['room1'];
 
 // 初始化 Viewer
 const currentCamera = MODEL_CONFIG.cameraInit || CAMERA_INIT;
-const isMobile = window.innerWidth < 768;
 const viewer = new GaussianSplats3D.Viewer({
     'rootElement': viewContainer,
     'cameraUp': currentCamera.up,
@@ -216,20 +215,6 @@ const viewer = new GaussianSplats3D.Viewer({
     'selfDrivenMode': true,
     'antialiased': true,
     'splatSortDistanceMapPrecision': 16,
-    dynamicScene: true,
-    // 如果畫面太窄，調大 FOV
-    fov: isMobile ? 60 : 45 
-});
-window.addEventListener('resize', () => {
-    const width = viewContainer.clientWidth;
-    const height = viewContainer.clientHeight;
-    
-    // 更新相機比例與渲染器尺寸
-    if (viewer.camera && viewer.renderer) {
-        viewer.camera.aspect = width / height;
-        viewer.camera.updateProjectionMatrix();
-        viewer.renderer.setSize(width, height);
-    }
 });
 
 // 載入模型檔案
