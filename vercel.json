@@ -10,5 +10,22 @@
         { "key": "Cross-Origin-Embedder-Policy", "value": "require-corp" }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/room1",
+      "destination": "/?id=room1",
+      "permanent": true
+    },
+    {
+      "source": "/room2",
+      "destination": "/?id=room2",
+      "permanent": true
+    },
+    {
+      "source": "/room3",
+      "destination": "/?id=room3",
+      "permanent": true
+    }
   ]
 }
