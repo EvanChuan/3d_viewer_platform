@@ -1,6 +1,14 @@
 import * as THREE from 'three';
 import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
 
+// main.js 最上方
+const urlParams = new URLSearchParams(window.location.search);
+const roomId = urlParams.get('id') || 'room1'; 
+
+console.log("當前網址參數:", window.location.search); // 新增這行來偵錯
+console.log("抓取到的 roomId:", roomId);
+
+
 // Gobal setting
 // 相機初始設定
 const CAMERA_INIT = {
@@ -80,12 +88,6 @@ function getRotationQuat(xDeg, yDeg, zDeg) {
     const q = new THREE.Quaternion().setFromEuler(euler);
     return [q.x, q.y, q.z, q.w];
 }
-
-// 讀 URL ?room=room1/room2/room3
-const params = new URLSearchParams(window.location.search);
-const roomId = params.get('room') || 'room1';
-const meta = ROOM_META[roomId] || ROOM_META.room1;
-console.log("當前房源 ID:", roomId);
 
 // 針對不同房間的設定
 const ROOM_CONFIGS = {
@@ -201,7 +203,7 @@ const ROOM_CONFIGS = {
     alphaThreshold: 5, // 過濾雜訊閾值
   },
 };
-const MODEL_CONFIG = ROOM_CONFIGS[roomId];
+const MODEL_CONFIG = ROOM_CONFIGS[roomId] || ROOM_CONFIGS['room1']; 
 
 // 初始化 Viewer
 const currentCamera = MODEL_CONFIG.cameraInit || CAMERA_INIT;
@@ -227,7 +229,7 @@ viewer.addSplatScenes([{
 .then(() => {
   console.log('Viewer started successfully');
   viewer.start();
-  setupCameraDebug(); // 啟動監測工具
+  // setupCameraDebug(); // 啟動監測工具
 
 }).catch((err) => {
   console.error('載入失敗:', err);
