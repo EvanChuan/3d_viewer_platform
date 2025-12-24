@@ -465,7 +465,11 @@ function applyRoomMeta(meta) {
 }
 
 // 啟動執行
-applyRoomMeta(meta);
+if (ROOM_META[roomId]) {
+    applyRoomMeta(ROOM_META[roomId]);
+} else {
+    console.error('找不到該房源資訊');
+}
 loadGallery();
 
 // // 2. 建立更新與監聽邏輯
