@@ -85,6 +85,7 @@ function getRotationQuat(xDeg, yDeg, zDeg) {
 const params = new URLSearchParams(window.location.search);
 const roomId = params.get('room') || 'room1';
 const meta = ROOM_META[roomId] || ROOM_META.room1;
+console.log("當前房源 ID:", roomId);
 
 // 針對不同房間的設定
 const ROOM_CONFIGS = {
