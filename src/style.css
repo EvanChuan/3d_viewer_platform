@@ -10,15 +10,20 @@
 body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: hidden; /* 保持不滾動，由內部容器處理 */
     font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    position: fixed; /* ✨ 修正：防止手機位址列造成高度變化 */
+    width: 100%;
+    height: 100%;
 }
 
 #app {
     width: 100vw;
     height: 100vh;
+    height: 100dvh; /* ✨ 使用動態視窗高度，適配手機 */
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 /* ==========================================
@@ -28,67 +33,72 @@ body {
     position: relative;
     width: 100%;
     height: 85vh;
+    height: 85dvh; /* ✨ 使用動態視窗高度 */
+    flex-shrink: 0; /* ✨ 防止被壓縮 */
 }
 
 #gallery-container {
-  width: 100%;
-  height: 15vh;
-  background: #777474;
-  display: flex;
-  flex-direction: column; /* ✨ 改為垂直排列 */
-  padding: 8px 10px;
-  box-sizing: border-box;
-  border-top: 1px solid #333;
+    width: 100%;
+    height: 15vh;
+    height: 15dvh; /* ✨ 使用動態視窗高度 */
+    background: #8d8787;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border-top: 1px solid #333;
+    flex-shrink: 0; /* ✨ 防止被壓縮 */
 }
 
-/* ✨ 新增：導覽標題樣式 */
+/* 導覽標題樣式 */
 .gallery-title {
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 0 6px 0;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 0 6px 0;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
 }
 
 .gallery-title span {
-  color: #b1acac;
-  font-size: 10px;
-  font-weight: 400;
-  margin-left: 4px;
+    color: #e7dede;
+    font-size: 10px;
+    font-weight: 400;
+    margin-left: 4px;
 }
 
-/* ✨ 新增：圖片容器 */
+/* 圖片容器 */
 .gallery-images {
-  display: flex;
-  overflow-x: auto;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  min-height: 0; /* 防止 flex 溢出 */
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch; /* ✨ 手機滑動優化 */
 }
 
-/* 滾動條美化 (選用) */
+/* 滾動條美化 */
 .gallery-images::-webkit-scrollbar {
-  height: 6px;
+    height: 6px;
 }
 
 .gallery-images::-webkit-scrollbar-track {
-  background: #222;
+    background: #222;
 }
 
 .gallery-images::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 3px;
+    background: #555;
+    border-radius: 3px;
 }
 
 .gallery-images::-webkit-scrollbar-thumb:hover {
-  background: #777;
+    background: #777;
 }
 
-
 /* ==========================================
-   左側：房源資訊卡 (新版美化)
+   左側：房源資訊卡
    ========================================== */
 .property-card {
     position: absolute;
@@ -96,7 +106,7 @@ body {
     left: 20px;
     z-index: 100;
     width: 300px;
-    background: rgba(255, 255, 255, 0.623);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     padding: 25px;
     border-radius: 16px;
@@ -168,8 +178,17 @@ body {
     border-radius: 50%;
 }
 
-.agent-info .name { font-size: 16px; font-weight: 600; margin: 0; }
-.agent-info .role { font-size: 13px; color: #888; margin: 0; }
+.agent-info .name { 
+    font-size: 16px; 
+    font-weight: 600; 
+    margin: 0; 
+}
+
+.agent-info .role { 
+    font-size: 13px; 
+    color: #888; 
+    margin: 0; 
+}
 
 /* ==========================================
    量測組件
@@ -187,21 +206,6 @@ body {
     z-index: 150;
 }
 
-#camera-debug {
-    position: absolute;
-    bottom: 17vh;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    color: #00ff00;
-    padding: 10px;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 12px;
-    pointer-events: none;
-    z-index: 100;
-    border: 1px solid #333;
-}
-
 /* ==========================================
    功能性類別
    ========================================== */
@@ -213,551 +217,611 @@ body {
 
 /* UI Container */
 #ui-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 /* 讓 UI 元素恢復可點擊 */
 .navbar, .property-card, .toolbar, .btn-primary, .btn-secondary {
-  pointer-events: auto;
+    pointer-events: auto;
 }
 
 /* Navbar */
 .navbar {
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
-  color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+    color: white;
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 1.5rem;
-  letter-spacing: -1px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -1px;
 }
 
 .status-badge {
-  background: rgba(0,0,0,0.6);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  backdrop-filter: blur(4px);
+    background: rgba(0,0,0,0.6);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    backdrop-filter: blur(4px);
 }
 
-/* 工具列容器 */
+/* ==========================================
+   工具列容器
+   ========================================== */
 .toolbar {
-  position: fixed;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(10px);
-  padding: 15px 10px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 1000;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 70px; /* ✨ 確保按鈕不會太窄 */
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    padding: 15px 10px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 70px;
 }
 
-/* ✨ 折疊狀態 */
+/* 折疊狀態 */
 .toolbar.collapsed {
-  padding: 10px 8px;
-  min-width: 50px;
+    padding: 10px 8px;
+    min-width: 50px;
 }
 
 .toolbar.collapsed .toolbar-header,
 .toolbar.collapsed .tool-btn span {
-  display: none; /* 隱藏文字標籤 */
+    display: none;
 }
 
 .toolbar.collapsed .tool-btn {
-  padding: 8px;
+    padding: 8px;
 }
 
-/* ✨ 折疊按鈕 */
+/* 折疊按鈕 */
 .toolbar-toggle {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
-  font-size: 18px;
-  padding: 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-bottom: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 5px;
 }
 
 .toolbar-toggle:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
 }
 
 .toolbar.collapsed .toolbar-toggle {
-  font-size: 16px;
-  padding: 6px;
+    font-size: 16px;
+    padding: 6px;
 }
 
 /* 標題樣式 */
 .toolbar-header {
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-  text-align: center;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  margin-bottom: 5px;
-  letter-spacing: 1px;
-  transition: opacity 0.3s;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+    transition: opacity 0.3s;
 }
 
-/* 按鈕樣式最佳化 */
+/* 按鈕樣式 */
 .tool-btn {
-  background: transparent;
-  border: none;
-  color: #ccc;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 8px;
-  border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 8px;
 }
 
 .tool-btn span {
-  font-size: 11px;
-  margin-top: 4px;
-  transition: opacity 0.3s;
+    font-size: 11px;
+    margin-top: 4px;
+    transition: opacity 0.3s;
 }
 
 /* 懸停與啟動狀態 */
 .tool-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
 }
 
 .tool-btn.active {
-  background: #007bff;
-  color: #fff;
+    background: #007bff;
+    color: #fff;
 }
-
 
 /* Measure Toast */
 .measure-toast {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.8);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  backdrop-filter: blur(4px);
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    backdrop-filter: blur(4px);
 }
-
-.hidden { display: none; }
 
 /* ==========================================
    照片放大彈窗
-========================================== */
-
+   ========================================== */
 .photo-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  transition: opacity 0.3s;
-  padding: 20px;
-  box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    transition: opacity 0.3s;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .photo-overlay.hidden {
-  display: none;
-  opacity: 0;
+    display: none;
+    opacity: 0;
 }
 
-/* 彈窗內容容器 - 改為垂直排列 */
+/* 彈窗內容容器 */
 .overlay-content {
-  position: relative;
-  max-width: 90%;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column; /* ✨ 垂直排列 */
-  align-items: center;
-  gap: 15px; /* ✨ 圖片與文字間距 */
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
 /* 放大照片樣式 */
 #enlarged-photo {
-  max-width: 100%;
-  max-height: 70vh; /* ✨ 限制高度，留空間給文字 */
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-  background: #000; /* 防止透明圖片背景問題 */
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    background: #000;
 }
 
-/* 文字說明區 - 移到圖片下方 */
+/* 文字說明區 */
 .photo-caption {
-  position: relative; /* ✨ 改為相對定位 */
-  width: 100%;
-  max-width: 800px;
-  background: rgba(30, 30, 30, 0.95); /* ✨ 深色半透明背景 */
-  color: white;
-  padding: 15px 20px;
-  text-align: left; /* ✨ 改為左對齊 */
-  font-size: 15px;
-  line-height: 1.6;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    background: rgba(30, 30, 30, 0.95);
+    color: white;
+    padding: 15px 20px;
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.6;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
 }
 
 /* 關閉按鈕 */
 .close-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  color: #fff;
-  font-size: 40px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 2100;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  transition: transform 0.2s;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2100;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s;
 }
 
 .close-btn:hover {
-  transform: scale(1.1);
-  color: #ff4444;
+    transform: scale(1.1);
+    color: #ff4444;
+}
+
+/* ==========================================
+   相機除錯面板
+   ========================================== */
+#camera-debug {
+    position: absolute;
+    bottom: 17vh;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #00ff00;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 100;
+    border: 1px solid #333;
+    line-height: 1.6;
+    min-width: 300px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+#camera-debug div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ==========================================
    響應式設計 (手機/平板)
-========================================== */
+   ========================================== */
 
 /* 平板與小螢幕 (768px 以下) */
 @media screen and (max-width: 768px) {
-  /* 房源資訊卡改為可摺疊式 */
-  .property-card {
-    width: calc(100% - 20px);
-    max-width: 350px;
-    left: 10px;
-    top: 10px;
-    padding: 15px;
-    max-height: 45vh;
-    overflow-y: auto;
-  }
+    /* 房源資訊卡 */
+    .property-card {
+        width: calc(100% - 20px);
+        max-width: 350px;
+        left: 10px;
+        top: 10px;
+        padding: 15px;
+        max-height: 45vh;
+        max-height: 45dvh; /* ✨ 使用動態視窗高度 */
+        overflow-y: auto;
+    }
 
-  .property-card .title {
-    font-size: 18px;
-  }
+    .property-card .title {
+        font-size: 18px;
+    }
 
-  .property-card .desc {
-    font-size: 13px;
-    margin-bottom: 15px;
-  }
+    .property-card .desc {
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
 
-  .price-line .price {
-    font-size: 18px;
-  }
+    .price-line .price {
+        font-size: 18px;
+    }
 
-  /* 工具列調整 */
-  .toolbar {
-    right: 10px;
-    padding: 10px 8px;
-    gap: 8px;
-    min-width: 60px;
-  }
+    /* 工具列調整 */
+    .toolbar {
+        right: 10px;
+        padding: 10px 8px;
+        gap: 8px;
+        min-width: 60px;
+    }
 
-  .toolbar.collapsed {
-    min-width: 45px;
-    padding: 8px 6px;
-  }
+    .toolbar.collapsed {
+        min-width: 45px;
+        padding: 8px 6px;
+    }
 
-  .tool-btn {
-    padding: 6px;
-  }
+    .tool-btn {
+        padding: 6px;
+    }
 
-  .tool-btn span {
-    font-size: 10px;
-  }
+    .tool-btn span {
+        font-size: 10px;
+    }
 
-  .toolbar-toggle {
-    font-size: 16px;
-    padding: 6px;
-  }
+    .toolbar-toggle {
+        font-size: 16px;
+        padding: 6px;
+    }
 
-  /* 相機除錯面板縮小 */
-  #camera-debug {
-    font-size: 10px;
-    padding: 8px;
-    bottom: 16vh;
-  }
+    /* 相機除錯面板 */
+    #camera-debug {
+        font-size: 10px;
+        padding: 10px;
+        bottom: 13vh;
+        bottom: 13dvh;
+        right: 8px;
+        min-width: 260px;
+    }
 
-  /* 照片庫高度調整 */
-  #gallery-container {
-    height: 12vh;
-    padding: 6px 10px;
-  }
+    /* 照片庫高度 */
+    #gallery-container {
+        height: 12vh;
+        height: 12dvh;
+        padding: 6px 10px;
+    }
 
-  .gallery-title {
-    font-size: 12px;
-    padding: 3px 0 5px 0;
-  }
+    .gallery-title {
+        font-size: 11px;
+        padding: 3px 0 5px 0;
+    }
 
-  .gallery-title span {
-    font-size: 10px;
-  }
+    .gallery-title span {
+        font-size: 9px;
+    }
 
-  #view-container {
-    height: 88vh;
-  }
+    #view-container {
+        height: 88vh;
+        height: 88dvh;
+    }
 
-   .overlay-content {
-    max-width: 95%;
-    max-height: 85vh;
-    gap: 12px;
-  }
+    /* 照片彈窗 */
+    .overlay-content {
+        max-width: 95%;
+        max-height: 85vh;
+        gap: 12px;
+    }
 
-  #enlarged-photo {
-    max-height: 60vh;
-  }
+    #enlarged-photo {
+        max-height: 60vh;
+    }
 
-  .photo-caption {
-    font-size: 14px;
-    padding: 12px 15px;
-    max-width: 100%;
-  }
+    .photo-caption {
+        font-size: 14px;
+        padding: 12px 15px;
+        max-width: 100%;
+    }
 
-  .close-btn {
-    font-size: 35px;
-    top: 15px;
-    right: 15px;
-  }
+    .close-btn {
+        font-size: 35px;
+        top: 15px;
+        right: 15px;
+    }
 }
-
 
 /* 手機豎屏 (480px 以下) */
 @media screen and (max-width: 480px) {
-  /* 房源資訊卡更緊湊 */
-  .property-card {
-    width: calc(100% - 16px);
-    left: 8px;
-    top: 8px;
-    padding: 12px;
-    max-height: 40vh;
-  }
+    /* 房源資訊卡 */
+    .property-card {
+        width: calc(100% - 16px);
+        left: 8px;
+        top: 8px;
+        padding: 12px;
+        max-height: 35vh; /* ✨ 減少高度避免遮擋 */
+        max-height: 35dvh;
+    }
 
-  .property-card .title {
-    font-size: 16px;
-    margin-bottom: 6px;
-  }
+    .property-card .title {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
 
-  .property-card .address {
-    font-size: 12px;
-    margin-bottom: 12px;
-  }
+    .property-card .address {
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
 
-  .price-line {
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-  }
+    .price-line {
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+    }
 
-  .price-line .price {
-    font-size: 16px;
-  }
+    .price-line .price {
+        font-size: 16px;
+    }
 
-  .price-line .size,
-  .price-line .layout,
-  .price-line .floor {
-    font-size: 11px;
-    padding: 3px 8px;
-  }
+    .price-line .size,
+    .price-line .layout,
+    .price-line .floor {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
 
-  .property-card .desc {
-    font-size: 12px;
-    line-height: 1.5;
-    margin-bottom: 12px;
-  }
+    .property-card .desc {
+        font-size: 12px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
 
-  .agent-info .avatar {
-    width: 38px;
-    height: 38px;
-    font-size: 20px;
-  }
+    .agent-info .avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 20px;
+    }
 
-  .agent-info .name {
-    font-size: 14px;
-  }
+    .agent-info .name {
+        font-size: 14px;
+    }
 
-  .agent-info .role {
-    font-size: 11px;
-  }
+    .agent-info .role {
+        font-size: 11px;
+    }
 
-  /* 工具列進一步縮小 */
-  .toolbar {
-    right: 8px;
-    padding: 8px 6px;
-    gap: 6px;
-    min-width: 50px;
-  }
+    /* 工具列 */
+    .toolbar {
+        right: 8px;
+        padding: 8px 6px;
+        gap: 6px;
+        min-width: 50px;
+    }
 
-  .toolbar.collapsed {
-    min-width: 40px;
-    padding: 6px 4px;
-  }
+    .toolbar.collapsed {
+        min-width: 40px;
+        padding: 6px 4px;
+    }
 
-  .toolbar-header {
-    font-size: 10px;
-    padding-bottom: 6px;
-  }
+    .toolbar-header {
+        font-size: 10px;
+        padding-bottom: 6px;
+    }
 
-  .tool-btn {
-    padding: 5px;
-  }
+    .tool-btn {
+        padding: 5px;
+    }
 
-  .tool-btn span {
-    font-size: 9px;
-    margin-top: 3px;
-  }
+    .tool-btn span {
+        font-size: 9px;
+        margin-top: 3px;
+    }
 
-  .toolbar-toggle {
-    font-size: 14px;
-    padding: 5px;
-  }
+    .toolbar-toggle {
+        font-size: 14px;
+        padding: 5px;
+    }
 
-  /* 頂部導航列 */
-  .navbar {
-    padding: 0.8rem 1rem;
-  }
+    /* 頂部導航 */
+    .navbar {
+        padding: 0.8rem 1rem;
+    }
 
-  .logo {
-    font-size: 1.2rem;
-  }
+    .logo {
+        font-size: 1.2rem;
+    }
 
-  .status-badge {
-    font-size: 0.7rem;
-    padding: 4px 10px;
-  }
+    .status-badge {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
 
-  /* 照片庫高度 */
-  #gallery-container {
-    height: 10vh;
-    padding: 5px 8px;
-  }
+    /* 照片庫 */
+    #gallery-container {
+        height: 12vh; /* ✨ 增加高度確保可見 */
+        height: 12dvh;
+        padding: 5px 8px;
+    }
 
-  .gallery-title {
-    font-size: 11px;
-    padding: 2px 0 4px 0;
-  }
+    .gallery-title {
+        font-size: 10px;
+        padding: 2px 0 3px 0;
+    }
 
-  .gallery-title span {
-    font-size: 9px;
-  }
+    .gallery-title span {
+        font-size: 8px;
+    }
 
-  #view-container {
-    height: 90vh;
-  }
+    #view-container {
+        height: 88vh;
+        height: 88dvh;
+    }
 
-  /* 測量提示 */
-  .measure-toast {
-    bottom: 12vh;
-    font-size: 0.8rem;
-    padding: 8px 16px;
-  }
+    /* 相機除錯 */
+    #camera-debug {
+        font-size: 9px;
+        padding: 8px;
+        bottom: 13vh;
+        bottom: 13dvh;
+        right: 8px;
+        min-width: 220px;
+        max-width: calc(100vw - 80px);
+    }
 
-  /* 照片彈窗 */
-  .photo-overlay {
-    padding: 15px;
-  }
+    #camera-debug div {
+        font-size: 9px;
+    }
 
-  .overlay-content {
-    max-width: 100%;
-    max-height: 80vh;
-    gap: 10px;
-  }
+    /* 測量提示 */
+    .measure-toast {
+        bottom: 14vh;
+        bottom: 14dvh;
+        font-size: 0.8rem;
+        padding: 8px 16px;
+    }
 
-  #enlarged-photo {
-    max-height: 55vh;
-    border-radius: 6px;
-  }
+    /* 照片彈窗 */
+    .photo-overlay {
+        padding: 15px;
+    }
 
-  .photo-caption {
-    font-size: 13px;
-    padding: 10px 12px;
-    line-height: 1.5;
-    border-radius: 6px;
-  }
+    .overlay-content {
+        max-width: 100%;
+        max-height: 80vh;
+        gap: 10px;
+    }
 
-  .close-btn {
-    font-size: 30px;
-    top: 10px;
-    right: 10px;
-  }
+    #enlarged-photo {
+        max-height: 55vh;
+        border-radius: 6px;
+    }
+
+    .photo-caption {
+        font-size: 13px;
+        padding: 10px 12px;
+        line-height: 1.5;
+        border-radius: 6px;
+    }
+
+    .close-btn {
+        font-size: 30px;
+        top: 10px;
+        right: 10px;
+    }
 }
-
 
 /* 手機橫屏 */
 @media screen and (max-height: 500px) and (orientation: landscape) {
-  .property-card {
-    max-height: 60vh;
-    width: 280px;
-  }
+    .property-card {
+        max-height: 60vh;
+        width: 280px;
+    }
 
-  #gallery-container {
-    height: 15vh;
-  }
+    #gallery-container {
+        height: 15vh;
+    }
 
-  #view-container {
-    height: 85vh;
-  }
+    #view-container {
+        height: 85vh;
+    }
 
-  .toolbar {
-    top: 50%;
-    transform: translateY(-50%) scale(0.9);
-  }
+    .toolbar {
+        top: 50%;
+        transform: translateY(-50%) scale(0.9);
+    }
 
-  .overlay-content {
-    flex-direction: row; /* ✨ 橫屏改為水平排列 */
-    max-width: 95%;
-    gap: 15px;
-  }
+    #camera-debug {
+        bottom: 18vh;
+        right: 8px;
+        font-size: 10px;
+        padding: 8px;
+        min-width: 240px;
+    }
 
-  #enlarged-photo {
-    max-height: 80vh;
-    max-width: 60%;
-  }
+    /* 照片彈窗橫屏 */
+    .overlay-content {
+        flex-direction: row;
+        max-width: 95%;
+        gap: 15px;
+    }
 
-  .photo-caption {
-    max-width: 35%;
-    max-height: 80vh;
-    overflow-y: auto;
-    font-size: 12px;
-  }
+    #enlarged-photo {
+        max-height: 80vh;
+        max-width: 60%;
+    }
+
+    .photo-caption {
+        max-width: 35%;
+        max-height: 80vh;
+        overflow-y: auto;
+        font-size: 12px;
+    }
 }
+
 
 
 /* ==========================================
