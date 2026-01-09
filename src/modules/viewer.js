@@ -21,6 +21,9 @@ export function initViewer(modelConfig) {
     splatSortDistanceMapPrecision: 16,
   });
 
+  // ✨ 將 viewer 儲存到全域，供除錯工具使用
+  window.viewer = viewer;
+
   return viewer;
 }
 

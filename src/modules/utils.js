@@ -39,6 +39,17 @@ export function initAppDOM() {
   return true;
 }
 
+// ✨ 新增：根據性別取得頭像 emoji
+function getAvatarByGender(gender) {
+  const avatars = {
+    male: '👨‍💼',      // 男性商務人士
+    female: '👩‍💼',    // 女性商務人士
+    default: '👤'     // 預設通用頭像
+  };
+  
+  return avatars[gender] || avatars.default;
+}
+
 // 應用房間資訊到 UI
 export function applyRoomMeta(meta) {
   const fields = {
@@ -49,8 +60,8 @@ export function applyRoomMeta(meta) {
     'listing-layout': 'layout',
     'listing-floor': 'floor',
     'listing-desc': 'desc',
-    'agent_name': 'agentName',
-    'agent_role': 'agentRole'
+    'agent-name': 'agentName',
+    'agent-role': 'agentRole'
   };
 
   Object.entries(fields).forEach(([id, key]) => {
@@ -59,4 +70,10 @@ export function applyRoomMeta(meta) {
       el.innerText = meta[key];
     }
   });
+
+   // ✨ 新增：更新頭像
+  const avatarEl = document.querySelector('.agent-info .avatar');
+  if (avatarEl && meta.agentGender) {
+    avatarEl.innerText = getAvatarByGender(meta.agentGender);
+  }
 }

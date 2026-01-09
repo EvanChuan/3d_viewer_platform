@@ -10,6 +10,7 @@ export const ROOM_META = {
     desc: '雙人套房、落地窗陽台、乾溼分離衛浴、全新家具與電器設備。',
     agentName: 'Evan',
     agentRole: '房東直租',
+    agentGender: 'male', 
   },
   room2: {
     title: '仁德區・陽光景觀單人套房',
@@ -21,6 +22,7 @@ export const ROOM_META = {
     desc: '單人套房、落地窗陽台、乾溼分離衛浴、全新家具與電器設備。',
     agentName: 'Evan',
     agentRole: '房東直租',
+    agentGender: 'female', 
   },
   room3: {
     title: '大安區・靜巷質感宅',
@@ -32,5 +34,17 @@ export const ROOM_META = {
     desc: '靜巷低噪音，精緻裝潢，附全套家具家電。',
     agentName: '王經理',
     agentRole: '專業仲介',
+  },
+  room4: {
+    title: '高雄新興區・市區景觀房',
+    address: '高雄新興區',
+    price: '$24,000 / 月',
+    size: '25 坪',
+    layout: '2房 1廳 2衛',
+    floor: '7F/15F',
+    desc: '全新家具與電器設備，靠近市區高雄火車站，附近機能佳。',
+    agentName: '洪先生',
+    agentRole: '房東直租',
+    agentGender: 'male', 
   },
 };

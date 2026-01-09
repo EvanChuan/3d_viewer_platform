@@ -11,6 +11,20 @@ import { initMeasureTool } from './modules/measure.js';
 import { setupModeButtons, setupMobileCollapse, setupToolbarCollapse } from './modules/ui.js'
 
 // ==========================================
+// 除錯模式開關
+// ==========================================
+// ✨ 正式版請改為 false
+const DEBUG_MODE = false; //true; 
+
+// 動態引入除錯工具
+let setupCameraDebug = null;
+if (DEBUG_MODE) {
+  const debugModule = await import('./modules/cameraDebug.js');
+  setupCameraDebug = debugModule.setupCameraDebug;
+}
+
+
+// ==========================================
 // 主程式初始化
 // ==========================================
 async function init() {
@@ -61,7 +75,13 @@ async function init() {
   setupMobileCollapse();
   window.addEventListener('resize', setupMobileCollapse);
 
-  console.log('✅ 應用程式初始化完成');
+  // 12. 僅開發模式啟用除錯工具
+  if (DEBUG_MODE && setupCameraDebug) {
+    setupCameraDebug(viewer);
+    console.log('🔧 除錯模式已啟用');
+  }
+
+  console.log(`✅ 應用程式初始化完成 ${DEBUG_MODE ? '(開發模式)' : '(正式版)'}`);
 }
 
 // 啟動應用程式

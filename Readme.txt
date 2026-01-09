@@ -8,3 +8,7 @@
     // 房間資訊 ROOM_META
     // 針對不同房間的設定 ROOM_CONFIGS
 4.確認網頁符合預期即可git push重新在vercel中depoly
+
+# 網頁瀏覽切換房型說明： (在尾部加入/?id=room*)
+http://localhost:5173/?id=room2
+https://3d-viewer-platform.vercel.app/?id=room2
