@@ -70,6 +70,57 @@ app.innerHTML = `
   // </div>
 ;
 
+// 手機版資訊卡摺疊功能
+function setupMobileCollapse() {
+  const propertyCard = document.querySelector('.property-card');
+  if (!propertyCard) return;
+
+  // 檢測是否為小螢幕
+  const isMobile = window.innerWidth <= 768;
+  
+  if (isMobile) {
+    // 新增摺疊按鈕
+    const toggleBtn = document.createElement('button');
+    toggleBtn.innerHTML = '▼';
+    toggleBtn.style.cssText = `
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 101;
+      font-size: 14px;
+    `;
+    
+    propertyCard.appendChild(toggleBtn);
+    
+    let isCollapsed = false;
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isCollapsed = !isCollapsed;
+      
+      if (isCollapsed) {
+        propertyCard.style.maxHeight = '60px';
+        propertyCard.style.overflow = 'hidden';
+        toggleBtn.innerHTML = '▶';
+      } else {
+        propertyCard.style.maxHeight = '45vh';
+        propertyCard.style.overflow = 'auto';
+        toggleBtn.innerHTML = '▼';
+      }
+    });
+  }
+}
+
+// 在視窗載入完成後執行
+window.addEventListener('load', setupMobileCollapse);
+window.addEventListener('resize', setupMobileCollapse);
+
 // 後續的 DOM 節點選取邏輯保持不變
 const viewContainer = document.querySelector('#view-container');
 const galleryContainer = document.querySelector('#gallery-container');

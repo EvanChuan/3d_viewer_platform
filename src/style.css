@@ -342,3 +342,209 @@ body {
     z-index: 2100;
     text-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
+
+/* ==========================================
+   響應式設計 (手機/平板)
+========================================== */
+
+/* 平板與小螢幕 (768px 以下) */
+@media screen and (max-width: 768px) {
+  /* 房源資訊卡改為可摺疊式 */
+  .property-card {
+    width: calc(100% - 20px);
+    max-width: 350px;
+    left: 10px;
+    top: 10px;
+    padding: 15px;
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+
+  .property-card .title {
+    font-size: 18px;
+  }
+
+  .property-card .desc {
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+
+  .price-line .price {
+    font-size: 18px;
+  }
+
+  /* 工具列調整 */
+  .toolbar {
+    right: 10px;
+    padding: 10px 8px;
+    gap: 8px;
+  }
+
+  .tool-btn {
+    padding: 6px;
+  }
+
+  .tool-btn span {
+    font-size: 10px;
+  }
+
+  /* 相機除錯面板縮小 */
+  #camera-debug {
+    font-size: 10px;
+    padding: 8px;
+    bottom: 16vh;
+  }
+
+  /* 照片庫高度調整 */
+  #gallery-container {
+    height: 12vh;
+  }
+
+  #view-container {
+    height: 88vh;
+  }
+}
+
+/* 手機豎屏 (480px 以下) */
+@media screen and (max-width: 480px) {
+  /* 房源資訊卡更緊湊 */
+  .property-card {
+    width: calc(100% - 16px);
+    left: 8px;
+    top: 8px;
+    padding: 12px;
+    max-height: 40vh;
+  }
+
+  .property-card .title {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .property-card .address {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .price-line {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  .price-line .price {
+    font-size: 16px;
+  }
+
+  .price-line .size,
+  .price-line .layout,
+  .price-line .floor {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .property-card .desc {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .agent-info .avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+
+  .agent-info .name {
+    font-size: 14px;
+  }
+
+  .agent-info .role {
+    font-size: 11px;
+  }
+
+  /* 工具列進一步縮小 */
+  .toolbar {
+    right: 8px;
+    padding: 8px 6px;
+    gap: 6px;
+  }
+
+  .toolbar-header {
+    font-size: 10px;
+    padding-bottom: 6px;
+  }
+
+  .tool-btn {
+    padding: 5px;
+  }
+
+  .tool-btn span {
+    font-size: 9px;
+    margin-top: 3px;
+  }
+
+  /* 頂部導航列 */
+  .navbar {
+    padding: 0.8rem 1rem;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .status-badge {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+  }
+
+  /* 照片庫高度 */
+  #gallery-container {
+    height: 10vh;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  #view-container {
+    height: 90vh;
+  }
+
+  /* 測量提示 */
+  .measure-toast {
+    bottom: 12vh;
+    font-size: 0.8rem;
+    padding: 8px 16px;
+  }
+
+  /* 照片彈窗 */
+  .photo-caption {
+    font-size: 14px;
+    padding: 15px 12px 12px;
+  }
+
+  .close-btn {
+    font-size: 32px;
+    top: 15px;
+    right: 15px;
+  }
+}
+
+/* 手機橫屏 */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .property-card {
+    max-height: 60vh;
+    width: 280px;
+  }
+
+  #gallery-container {
+    height: 15vh;
+  }
+
+  #view-container {
+    height: 85vh;
+  }
+
+  .toolbar {
+    top: 50%;
+    transform: translateY(-50%) scale(0.9);
+  }
+}
