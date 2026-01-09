@@ -1,0 +1,36 @@
+// 房間基本資訊配置
+export const ROOM_META = {
+  room1: {
+    title: '仁德區・陽光景觀雙人套房',
+    address: '台南市仁德區',
+    price: '$11,000 / 月',
+    size: '10坪',
+    layout: '1房 1衛',
+    floor: '3F/4F',
+    desc: '雙人套房、落地窗陽台、乾溼分離衛浴、全新家具與電器設備。',
+    agentName: 'Evan',
+    agentRole: '房東直租',
+  },
+  room2: {
+    title: '仁德區・陽光景觀單人套房',
+    address: '台南市仁德區',
+    price: '$8,500 / 月',
+    size: '7 坪',
+    layout: '1房 1衛',
+    floor: '3F/4F',
+    desc: '單人套房、落地窗陽台、乾溼分離衛浴、全新家具與電器設備。',
+    agentName: 'Evan',
+    agentRole: '房東直租',
+  },
+  room3: {
+    title: '大安區・靜巷質感宅',
+    address: '台北市大安區信義路三段',
+    price: '$40,000 / 月',
+    size: '18 坪',
+    layout: '2 房 2 廳',
+    floor: '5F/7F',
+    desc: '靜巷低噪音，精緻裝潢，附全套家具家電。',
+    agentName: '王經理',
+    agentRole: '專業仲介',
+  },
+};
