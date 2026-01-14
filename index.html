@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
@@ -18,11 +18,18 @@
     <!-- UI 覆蓋層 (Overlay) -->
     <div id="ui-container">
       
-      <!-- 頂部導航 -->
+      <!-- 頂部導航
       <nav class="navbar">
         <div class="logo">3D_Platfrom</div>
         <div class="status-badge">🟢 線上帶看</div>
-      </nav>
+      </nav> -->
+
+      <!-- ✨ 宣傳橫幅 (科技藍風格 + 記住關閉狀態) -->
+      <div class="promo-banner" id="promo-banner">
+        <span class="promo-icon">🚀🚀🚀</span>
+        <span class="promo-text">3D 導覽平台測試中，有意試用請聯繫開發: kofour23348@gmail.com</span>
+        <button class="promo-close" onclick="closePromo()">&times;</button>
+      </div>
 
       <!-- 左側：房源資訊卡 -->
       <div class="property-card">
@@ -81,6 +88,55 @@
             <div id="photo-info" class="photo-caption"></div>
         </div>
     </div>
+
+    <!-- ✨ 橫幅控制腳本 -->
+    <script>
+      // 關閉橫幅函數（簡化版）
+      function closePromo() {
+        const banner = document.getElementById('promo-banner');
+        if (banner) {
+          banner.style.animation = 'slideUp 0.3s ease-out';
+          setTimeout(() => {
+            banner.style.display = 'none';
+            adjustPropertyCardPosition(false);
+          }, 300);
+        }
+      }
+
+      // 調整資訊卡位置
+      function adjustPropertyCardPosition(hasBanner) {
+        const card = document.querySelector('.property-card');
+        if (card) {
+          if (hasBanner) {
+            if (window.innerWidth <= 480) {
+              card.style.top = '45px';
+            } else if (window.innerWidth <= 768) {
+              card.style.top = '50px';
+            } else {
+              card.style.top = '60px';
+            }
+          } else {
+            if (window.innerWidth <= 480) {
+              card.style.top = '8px';
+            } else if (window.innerWidth <= 768) {
+              card.style.top = '10px';
+            } else {
+              card.style.top = '20px';
+            }
+          }
+        }
+      }
+
+      // 初始狀態：有橫幅
+      adjustPropertyCardPosition(true);
+
+      // 響應式調整
+      window.addEventListener('resize', () => {
+        const banner = document.getElementById('promo-banner');
+        const hasBanner = banner && banner.style.display !== 'none';
+        adjustPropertyCardPosition(hasBanner);
+      });
+    </script>
 
     <script type="module" src="/src/main.js"></script>
   </body>
