@@ -134,7 +134,7 @@ export const ROOM_MODELS = {
   },
 
   room4: {
-    path: 'assets/room4.ksplat',
+    path: 'assets/room4_1.ksplat',
     imagepath: 'data/room4/',
     images: [
       {
